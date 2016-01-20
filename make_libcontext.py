@@ -12,6 +12,9 @@ files = [
 ["jump_i386_sysv_elf_gas.S", "linux_i386", "gcc"],
 ["make_i386_sysv_elf_gas.S", "linux_i386", "gcc"],
 
+["jump_x86_64_sysv_elf_gas.S", "linux_x86_64", "gcc"],
+["make_x86_64_sysv_elf_gas.S", "linux_x86_64", "gcc"],
+
 ["jump_x86_64_sysv_macho_gas.S", "apple_x86_64", "gcc"],
 ["make_x86_64_sysv_macho_gas.S", "apple_x86_64", "gcc"],
 
@@ -81,7 +84,7 @@ f_out.write("#include \"libcontext.h\"\n")
 for [f_name, platform, compiler] in files:
     f_out.write("#if defined(LIBCONTEXT_PLATFORM_%s) && defined(LIBCONTEXT_COMPILER_%s)\n" %( platform, compiler ))
 
-    f_out.write("__asm volatile(\n")
+    f_out.write("__asm (\n")
 
     for l in removeCCppComment (open(f_name).read()).split('\n'):
 	tokens = l.split()

@@ -15,7 +15,7 @@
 */
 #include "libcontext.h"
 #if defined(LIBCONTEXT_PLATFORM_windows_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".p2align 4,,15\n"
 ".globl	_jump_fcontext\n"
@@ -77,7 +77,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_windows_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".p2align 4,,15\n"
 ".globl	_make_fcontext\n"
@@ -127,7 +127,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_windows_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".p2align 4,,15\n"
 ".globl	jump_fcontext\n"
@@ -221,7 +221,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_windows_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".p2align 4,,15\n"
 ".globl	make_fcontext\n"
@@ -257,7 +257,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_linux_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl jump_fcontext\n"
 ".align 2\n"
@@ -299,7 +299,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_linux_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl make_fcontext\n"
 ".align 2\n"
@@ -332,8 +332,77 @@ __asm volatile(
 
 #endif
 
+#if defined(LIBCONTEXT_PLATFORM_linux_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
+__asm (
+".text\n"
+".globl jump_fcontext\n"
+".type jump_fcontext,@function\n"
+".align 16\n"
+"jump_fcontext:\n"
+"    pushq  %rbp  \n"
+"    pushq  %rbx  \n"
+"    pushq  %r15  \n"
+"    pushq  %r14  \n"
+"    pushq  %r13  \n"
+"    pushq  %r12  \n"
+"    leaq  -0x8(%rsp), %rsp\n"
+"    cmp  $0, %rcx\n"
+"    je  1f\n"
+"    stmxcsr  (%rsp)\n"
+"    fnstcw   0x4(%rsp)\n"
+"1:\n"
+"    movq  %rsp, (%rdi)\n"
+"    movq  %rsi, %rsp\n"
+"    cmp  $0, %rcx\n"
+"    je  2f\n"
+"    ldmxcsr  (%rsp)\n"
+"    fldcw  0x4(%rsp)\n"
+"2:\n"
+"    leaq  0x8(%rsp), %rsp\n"
+"    popq  %r12  \n"
+"    popq  %r13  \n"
+"    popq  %r14  \n"
+"    popq  %r15  \n"
+"    popq  %rbx  \n"
+"    popq  %rbp  \n"
+"    popq  %r8\n"
+"    movq  %rdx, %rax\n"
+"    movq  %rdx, %rdi\n"
+"    jmp  *%r8\n"
+".size jump_fcontext,.-jump_fcontext\n"
+".section .note.GNU-stack,\"\",%progbits\n"
+);
+
+#endif
+
+#if defined(LIBCONTEXT_PLATFORM_linux_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
+__asm (
+".text\n"
+".globl make_fcontext\n"
+".type make_fcontext,@function\n"
+".align 16\n"
+"make_fcontext:\n"
+"    movq  %rdi, %rax\n"
+"    andq  $-16, %rax\n"
+"    leaq  -0x48(%rax), %rax\n"
+"    movq  %rdx, 0x38(%rax)\n"
+"    stmxcsr  (%rax)\n"
+"    fnstcw   0x4(%rax)\n"
+"    leaq  finish(%rip), %rcx\n"
+"    movq  %rcx, 0x40(%rax)\n"
+"    ret \n"
+"finish:\n"
+"    xorq  %rdi, %rdi\n"
+"    call  _exit@PLT\n"
+"    hlt\n"
+".size make_fcontext,.-make_fcontext\n"
+".section .note.GNU-stack,\"\",%progbits\n"
+);
+
+#endif
+
 #if defined(LIBCONTEXT_PLATFORM_apple_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl _jump_fcontext\n"
 ".align 8\n"
@@ -373,7 +442,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_apple_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl _make_fcontext\n"
 ".align 8\n"
@@ -397,7 +466,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_apple_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl _jump_fcontext\n"
 ".align 2\n"
@@ -436,7 +505,7 @@ __asm volatile(
 #endif
 
 #if defined(LIBCONTEXT_PLATFORM_apple_i386) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
+__asm (
 ".text\n"
 ".globl _make_fcontext\n"
 ".align 2\n"

@@ -27,6 +27,7 @@ int MyClass::CountTo( int n )
             cofunc.Yield( i );
         }
 
+	return 0;
     }
 
 void MyClass::Run()

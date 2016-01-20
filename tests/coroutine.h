@@ -60,7 +60,7 @@ class COROUTINE
 {
 public:
     COROUTINE() :
-        m_saved( NULL ), m_self( NULL ), m_stack( NULL ), m_stackSize( c_defaultStackSize ),
+         m_saved( NULL ), m_self( NULL ) ,m_stack( NULL ), m_stackSize( c_defaultStackSize ),
         m_running( false )
     {
     }
@@ -71,7 +71,7 @@ public:
      */
     template <class T>
     COROUTINE( T* object, ReturnType(T::* ptr)( ArgType ) ) :
-        m_func( object, ptr ), m_self( NULL ), m_saved( NULL ), m_stack( NULL ),
+        m_func( object, ptr ),  m_saved( NULL ), m_self( NULL ), m_stack( NULL ),
         m_stackSize( c_defaultStackSize ), m_running( false )
     {
     }
