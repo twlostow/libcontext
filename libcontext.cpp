@@ -332,13 +332,12 @@ __asm volatile(
 
 #endif
 
-#if defined(LIBCONTEXT_PLATFORM_linux_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
+#if defined(LIBCONTEXT_PLATFORM_apple_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
 __asm volatile(
 ".text\n"
-".globl jump_fcontext\n"
-".type jump_fcontext,@function\n"
-".align 16\n"
-"jump_fcontext:\n"
+".globl _jump_fcontext\n"
+".align 8\n"
+"_jump_fcontext:\n"
 "    pushq  %rbp  \n"
 "    pushq  %rbx  \n"
 "    pushq  %r15  \n"
@@ -369,21 +368,19 @@ __asm volatile(
 "    movq  %rdx, %rax\n"
 "    movq  %rdx, %rdi\n"
 "    jmp  *%r8\n"
-".size jump_fcontext,.-jump_fcontext\n"
-".section .note.GNU-stack,\"\",%progbits\n"
 );
 
 #endif
 
-#if defined(LIBCONTEXT_PLATFORM_linux_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
+#if defined(LIBCONTEXT_PLATFORM_apple_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
 __asm volatile(
 ".text\n"
-".globl make_fcontext\n"
-".type make_fcontext,@function\n"
-".align 16\n"
-"make_fcontext:\n"
+".globl _make_fcontext\n"
+".align 8\n"
+"_make_fcontext:\n"
 "    movq  %rdi, %rax\n"
-"    andq  $-16, %rax\n"
+"    movabs  $-16,           %r8\n"
+"    andq    %r8,            %rax\n"
 "    leaq  -0x48(%rax), %rax\n"
 "    movq  %rdx, 0x38(%rax)\n"
 "    stmxcsr  (%rax)\n"
@@ -393,10 +390,47 @@ __asm volatile(
 "    ret \n"
 "finish:\n"
 "    xorq  %rdi, %rdi\n"
-"    call  _exit@PLT\n"
+"    call  __exit\n"
 "    hlt\n"
-".size make_fcontext,.-make_fcontext\n"
-".section .note.GNU-stack,\"\",%progbits\n"
+);
+
+#endif
+
+#if defined(LIBCONTEXT_PLATFORM_apple_i386) && defined(LIBCONTEXT_COMPILER_gcc)
+__asm volatile(
+".text\n"
+".globl _jump_fcontext\n"
+".align 2\n"
+"_jump_fcontext:\n"
+"    movl  0x10(%esp), %ecx\n"
+"    pushl  %ebp  \n"
+"    pushl  %ebx  \n"
+"    pushl  %esi  \n"
+"    pushl  %edi  \n"
+"    leal  -0x8(%esp), %esp\n"
+"    test  %ecx, %ecx\n"
+"    je  1f\n"
+"    stmxcsr  (%esp)\n"
+"    fnstcw  0x4(%esp)\n"
+"1:\n"
+"    movl  0x1c(%esp), %eax\n"
+"    movl  %esp, (%eax)\n"
+"    movl  0x20(%esp), %edx\n"
+"    movl  0x24(%esp), %eax\n"
+"    movl  %edx, %esp\n"
+"    test  %ecx, %ecx\n"
+"    je  2f\n"
+"    ldmxcsr  (%esp)\n"
+"    fldcw  0x4(%esp)\n"
+"2:\n"
+"    leal  0x8(%esp), %esp\n"
+"    popl  %edi  \n"
+"    popl  %esi  \n"
+"    popl  %ebx  \n"
+"    popl  %ebp  \n"
+"    popl  %edx\n"
+"    movl  %eax, 0x4(%esp)\n"
+"    jmp  *%edx\n"
 );
 
 #endif
@@ -423,30 +457,6 @@ __asm volatile(
 "finish:\n"
 "    xorl  %eax, %eax\n"
 "    movl  %eax, (%esp)\n"
-"    call  __exit\n"
-"    hlt\n"
-);
-
-#endif
-
-#if defined(LIBCONTEXT_PLATFORM_apple_x86_64) && defined(LIBCONTEXT_COMPILER_gcc)
-__asm volatile(
-".text\n"
-".globl _make_fcontext\n"
-".align 8\n"
-"_make_fcontext:\n"
-"    movq  %rdi, %rax\n"
-"    movabs  $-16,           %r8\n"
-"    andq    %r8,            %rax\n"
-"    leaq  -0x48(%rax), %rax\n"
-"    movq  %rdx, 0x38(%rax)\n"
-"    stmxcsr  (%rax)\n"
-"    fnstcw   0x4(%rax)\n"
-"    leaq  finish(%rip), %rcx\n"
-"    movq  %rcx, 0x40(%rax)\n"
-"    ret \n"
-"finish:\n"
-"    xorq  %rdi, %rdi\n"
 "    call  __exit\n"
 "    hlt\n"
 );
