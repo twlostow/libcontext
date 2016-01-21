@@ -532,3 +532,77 @@ __asm (
 
 #endif
 
+#if defined(LIBCONTEXT_PLATFORM_linux_arm32) && defined(LIBCONTEXT_COMPILER_gcc)
+__asm (
+".text\n"
+".globl jump_fcontext\n"
+".align 2\n"
+".type jump_fcontext,%function\n"
+"jump_fcontext:\n"
+"    @ save LR as PC\n"
+"    push {lr}\n"
+"    @ save V1-V8,LR\n"
+"    push {v1-v8,lr}\n"
+"    @ prepare stack for FPU\n"
+"    sub  sp, sp, #64\n"
+"    @ test if fpu env should be preserved\n"
+"    cmp  a4, #0\n"
+"    beq  1f\n"
+"    @ save S16-S31\n"
+"    vstmia  sp, {d8-d15}\n"
+"1:\n"
+"    @ store RSP (pointing to context-data) in A1\n"
+"    str  sp, [a1]\n"
+"    @ restore RSP (pointing to context-data) from A2\n"
+"    mov  sp, a2\n"
+"    @ test if fpu env should be preserved\n"
+"    cmp  a4, #0\n"
+"    beq  2f\n"
+"    @ restore S16-S31\n"
+"    vldmia  sp, {d8-d15}\n"
+"2:\n"
+"    @ prepare stack for FPU\n"
+"    add  sp, sp, #64\n"
+"    @ use third arg as return value after jump\n"
+"    @ and as first arg in context function\n"
+"    mov  a1, a3\n"
+"    @ restore v1-V8,LR,PC\n"
+"    pop {v1-v8,lr,pc}\n"
+".size jump_fcontext,.-jump_fcontext\n"
+"@ Mark that we don't need executable stack.\n"
+".section .note.GNU-stack,\"\",%progbits\n"
+);
+
+#endif
+
+#if defined(LIBCONTEXT_PLATFORM_linux_arm32) && defined(LIBCONTEXT_COMPILER_gcc)
+__asm (
+".text\n"
+".globl make_fcontext\n"
+".align 2\n"
+".type make_fcontext,%function\n"
+"make_fcontext:\n"
+"    @ shift address in A1 to lower 16 byte boundary\n"
+"    bic  a1, a1, #15\n"
+"    @ reserve space for context-data on context-stack\n"
+"    sub  a1, a1, #104\n"
+"    @ third arg of make_fcontext() == address of context-function\n"
+"    str  a3, [a1,#100]\n"
+"    @ compute abs address of label finish\n"
+"    adr  a2, finish\n"
+"    @ save address of finish as return-address for context-function\n"
+"    @ will be entered after context-function returns\n"
+"    str  a2, [a1,#96]\n"
+"    bx  lr @ return pointer to context-data\n"
+"finish:\n"
+"    @ exit code is zero\n"
+"    mov  a1, #0\n"
+"    @ exit application\n"
+"    bl  _exit@PLT\n"
+".size make_fcontext,.-make_fcontext\n"
+"@ Mark that we don't need executable stack.\n"
+".section .note.GNU-stack,\"\",%progbits\n"
+);
+
+#endif
+

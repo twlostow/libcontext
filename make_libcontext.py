@@ -21,6 +21,8 @@ files = [
 ["jump_i386_sysv_macho_gas.S", "apple_i386", "gcc"],
 ["make_i386_sysv_macho_gas.S", "apple_i386", "gcc"],
 
+["jump_arm_aapcs_elf_gas.S", "linux_arm32", "gcc"],
+["make_arm_aapcs_elf_gas.S", "linux_arm32", "gcc"]
 #["jump_arm_aapcs_elf_gas.S", "linux_arm", "gcc"],
 #["jump_arm_aapcs_macho_gas.S", "apple_arm", "gcc"],
 #["jump_ppc32_sysv_elf_gas.S", "linux_ppc32", "gcc"],

@@ -24,8 +24,6 @@
 
 #if defined(__GNUC__) || defined(__APPLE__)
 
-
-
     #define LIBCONTEXT_COMPILER_gcc
 
     #if defined(__linux__)
@@ -36,7 +34,11 @@
 	#elif __i386__
 	    #define LIBCONTEXT_PLATFORM_linux_i386
 	    #define LIBCONTEXT_CALL_CONVENTION
+	#elif __arm__
+	    #define LIBCONTEXT_PLATFORM_linux_arm32
+	    #define LIBCONTEXT_CALL_CONVENTION
 	#endif
+
     #elif defined(__MINGW32__) || defined (__MINGW64__)
 	#if defined(__x86_64__)
 	    #define LIBCONTEXT_COMPILER_gcc

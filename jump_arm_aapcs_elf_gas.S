@@ -51,7 +51,6 @@ jump_fcontext:
     @ prepare stack for FPU
     sub  sp, sp, #64
 
-#if (defined(__VFP_FP__) && !defined(__SOFTFP__))
     @ test if fpu env should be preserved
     cmp  a4, #0
     beq  1f
@@ -60,7 +59,6 @@ jump_fcontext:
     vstmia  sp, {d8-d15}
 
 1:
-#endif
 
     @ store RSP (pointing to context-data) in A1
     str  sp, [a1]
@@ -68,7 +66,6 @@ jump_fcontext:
     @ restore RSP (pointing to context-data) from A2
     mov  sp, a2
 
-#if (defined(__VFP_FP__) && !defined(__SOFTFP__))
     @ test if fpu env should be preserved
     cmp  a4, #0
     beq  2f
@@ -76,7 +73,6 @@ jump_fcontext:
     @ restore S16-S31
     vldmia  sp, {d8-d15}
 2:
-#endif
 
     @ prepare stack for FPU
     add  sp, sp, #64
