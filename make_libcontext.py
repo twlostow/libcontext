@@ -25,7 +25,13 @@ files = [
 ["make_arm_aapcs_elf_gas.S", "linux_arm32", "gcc"],
 
 ["jump_arm64_aapcs_elf_gas.S", "linux_arm64", "gcc"],
-["make_arm64_aapcs_elf_gas.S", "linux_arm64", "gcc"]
+["make_arm64_aapcs_elf_gas.S", "linux_arm64", "gcc"],
+
+["jump_ppc32_sysv_elf_gas.S", "linux_ppc32", "gcc"],
+["make_ppc32_sysv_elf_gas.S", "linux_ppc32", "gcc"],
+
+["jump_ppc64_sysv_elf_gas.S",  "linux_ppc64", "gcc"],
+["make_ppc64_sysv_elf_gas.S", "linux_ppc64", "gcc"]
 
 #["jump_arm_aapcs_elf_gas.S", "linux_arm", "gcc"],
 #["jump_arm_aapcs_macho_gas.S", "apple_arm", "gcc"],
@@ -64,6 +70,8 @@ def removeCCppComment( text ) :
 
 ignore_tokens = [".file"]
 
+preprocessor_tokens = ["#if", "#ifdef", "#else", "#endif"]
+
 
 f_out=open("libcontext.cpp","w")
 
@@ -96,7 +104,10 @@ for [f_name, platform, compiler] in files:
 	tokens = l.split()
 
 	if len(tokens) > 0 and tokens[0] not in ignore_tokens:
-	    f_out.write("\"%s\\n\"\n"%l.replace('"','\\"'))
+	    if (tokens[0] in preprocessor_tokens) or (tokens[0] == '#' and len(tokens) > 1 and '#'+tokens[1] in preprocessor_tokens):
+		f_out.write("%s\n"%l)
+	    else:
+		f_out.write("\"%s\\n\"\n"%l.replace('"','\\"'))
 #	    f_out.write(l)
     f_out.write(");\n\n");
 #    f_out.write(t)

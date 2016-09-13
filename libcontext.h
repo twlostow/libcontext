@@ -40,6 +40,12 @@
 	#elif __aarch64__
 	    #define LIBCONTEXT_PLATFORM_linux_arm64
 	    #define LIBCONTEXT_CALL_CONVENTION
+	#elif __powerpc64__
+	    #define LIBCONTEXT_PLATFORM_linux_ppc64
+	    #define LIBCONTEXT_CALL_CONVENTION
+	#elif __powerpc__
+	    #define LIBCONTEXT_PLATFORM_linux_ppc32
+	    #define LIBCONTEXT_CALL_CONVENTION
 	#endif
 
     #elif defined(__MINGW32__) || defined (__MINGW64__)
