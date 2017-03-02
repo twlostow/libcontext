@@ -37,6 +37,9 @@
 	#elif __arm__
 	    #define LIBCONTEXT_PLATFORM_linux_arm32
 	    #define LIBCONTEXT_CALL_CONVENTION
+	#elif __aarch64__
+	    #define LIBCONTEXT_PLATFORM_linux_arm64
+	    #define LIBCONTEXT_CALL_CONVENTION
 	#endif
 
     #elif defined(__MINGW32__) || defined (__MINGW64__)

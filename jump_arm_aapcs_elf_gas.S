@@ -82,7 +82,8 @@ jump_fcontext:
     mov  a1, a3
     
     @ restore v1-V8,LR,PC
-    pop {v1-v8,lr,pc}
+    pop {v1-v8,lr}
+    pop {pc}
 .size jump_fcontext,.-jump_fcontext
 
 @ Mark that we don't need executable stack.
