@@ -82,7 +82,7 @@ _make_fcontext:
     subi  r3, r3, 304
 
     ; third arg of make_fcontext() == address of context-function
-    stw  r5, 236(%r3)
+    stw  r5, 236(r3)
 
     ; load LR
     mflr  r0
@@ -93,7 +93,7 @@ l1:
     mflr  r4
     ; compute abs address of label finish
     addi  r4, r4, lo16((finish - .)+4)
-    # restore LR
+    ; restore LR
     mtlr  r0
     ; save address of finish as return-address for context-function
     ; will be entered after context-function returns
